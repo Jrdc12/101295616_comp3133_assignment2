@@ -6,7 +6,7 @@ import { SignupComponent } from './signup/signup.component';
 const routes: Routes = [
   { path: '', component: LoginComponent },
   { path: 'signup', component: SignupComponent },
-  { path: 'login', component: LoginComponent }
+  // { path: 'login', component: LoginComponent }
 ];
 
 @NgModule({
@@ -14,3 +14,6 @@ const routes: Routes = [
   exports: [RouterModule]
 })
 export class AppRoutingModule { }
+
+
+// https://signoz.io/blog/angular-graphql/
