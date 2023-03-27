@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { GraphqlService } from '../services/graphql.service';
 
 @Component({
   selector: 'app-signup',
@@ -8,17 +9,21 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 })
 export class SignupComponent implements OnInit {
   signupForm: FormGroup;
+  errorMessage = 'INVALID';
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, private graphqlService: GraphqlService) {
     this.signupForm = this.fb.group(
       {
-        name: ['', Validators.required],
+        username: ['', Validators.required],
         email: ['', [Validators.required, Validators.email]],
         password: ['', [Validators.required, Validators.minLength(8)]],
         confirmPassword: ['', Validators.required],
       },
       { validators: this.checkPasswords }
     );
+
+    // Reset error message
+    this.errorMessage = '';
   }
 
   ngOnInit(): void {}
@@ -32,7 +37,22 @@ export class SignupComponent implements OnInit {
 
   onSubmit(): void {
     if (this.signupForm.valid) {
-      console.log('Form data:', this.signupForm.value);
+      const username = this.signupForm.get('username')?.value;
+      const email = this.signupForm.get('email')?.value;
+      const password = this.signupForm.get('password')?.value;
+
+      // Call createUser method
+      this.graphqlService.createUser(username, email, password).subscribe(
+        (response) => {
+          // Handle successful user creation
+          console.log('User created:', response);
+        },
+        (error) => {
+          // Handle user creation error
+          console.log('User creation error:', error);
+          this.errorMessage = 'Failed to create user';
+        }
+      );
     } else {
       console.log('Form is invalid');
     }

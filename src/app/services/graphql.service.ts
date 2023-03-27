@@ -3,6 +3,7 @@ import { Apollo } from 'apollo-angular';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { LOGIN_MUTATION } from './graphql-queries';
+import { CREATE_USER_MUTATION } from './graphql-queries';
 
 @Injectable({
   providedIn: 'root',
@@ -31,6 +32,20 @@ export class GraphqlService {
   login(email: string, password: string): Observable<any> {
     return this.mutation<any>(LOGIN_MUTATION, {
       input: {
+        email,
+        password,
+      },
+    });
+  }
+
+  createUser(
+    username: string,
+    email: string,
+    password: string
+  ): Observable<any> {
+    return this.mutation<any>(CREATE_USER_MUTATION, {
+      input: {
+        username,
         email,
         password,
       },
