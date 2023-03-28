@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { GraphqlService } from '../services/graphql.service';
+import { Apollo } from 'apollo-angular';
+import { GET_EMPLOYEES } from '../services/graphql-queries';
 
 @Component({
   selector: 'app-employee-list',
@@ -9,12 +10,15 @@ import { GraphqlService } from '../services/graphql.service';
 export class EmployeeListComponent implements OnInit {
   employees: any[] = [];
 
-  constructor(private graphqlService: GraphqlService) {}
+  constructor(private apollo: Apollo) {}
 
-  ngOnInit(): void {
-    this.graphqlService.getEmployees().subscribe((result) => {
-      console.log(result);
-      this.employees = result.data.getEmployees;
-    });
+  ngOnInit() {
+    this.apollo
+      .watchQuery({
+        query: GET_EMPLOYEES,
+      })
+      .valueChanges.subscribe((result: any) => {
+        this.employees = result?.data?.getEmployees;
+      });
   }
 }
