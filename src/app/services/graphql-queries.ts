@@ -20,3 +20,16 @@ export const CREATE_USER_MUTATION = gql`
     }
   }
 `;
+
+export const GET_EMPLOYEES = gql`
+  query getEmployees {
+    getEmployees {
+      id
+      first_name
+      email
+      gender
+      last_name
+      salary
+    }
+  }
+`;

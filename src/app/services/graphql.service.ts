@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { LOGIN_MUTATION } from './graphql-queries';
 import { CREATE_USER_MUTATION } from './graphql-queries';
+import { GET_EMPLOYEES } from './graphql-queries';
 
 @Injectable({
   providedIn: 'root',
@@ -50,5 +51,9 @@ export class GraphqlService {
         password,
       },
     });
+  }
+
+  getEmployees(): Observable<any> {
+    return this.query<any>(GET_EMPLOYEES);
   }
 }

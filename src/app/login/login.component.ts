@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { GraphqlService } from '../services/graphql.service';
 
 @Component({
@@ -11,7 +12,11 @@ export class LoginComponent implements OnInit {
   loginForm: FormGroup;
   errorMessage = 'INVALID';
 
-  constructor(private fb: FormBuilder, private graphqlService: GraphqlService) {
+  constructor(
+    private fb: FormBuilder,
+    private graphqlService: GraphqlService,
+    private router: Router
+  ) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required],
@@ -33,6 +38,7 @@ export class LoginComponent implements OnInit {
         (response) => {
           // Handle successful login
           console.log('Login successful:', response);
+          this.router.navigate(['/employee-list']);
         },
         (error) => {
           // Handle login error
