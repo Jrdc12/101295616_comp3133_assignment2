@@ -5,6 +5,9 @@ import { map } from 'rxjs/operators';
 import { LOGIN_MUTATION } from './graphql-queries';
 import { CREATE_USER_MUTATION } from './graphql-queries';
 import { GET_EMPLOYEES } from './graphql-queries';
+import { CREATE_EMPLOYEE } from './graphql-queries';
+import { DELETE_EMPLOYEE } from './graphql-queries';
+import { EmployeeInput } from '../interfaces/EmployeeInput';
 
 @Injectable({
   providedIn: 'root',
@@ -55,5 +58,17 @@ export class GraphqlService {
 
   getEmployees(): Observable<any> {
     return this.query<any>(GET_EMPLOYEES);
+  }
+
+  createEmployee(employeeInput: EmployeeInput): Observable<any> {
+    return this.mutation<any>(CREATE_EMPLOYEE, {
+      EmployeeInput: employeeInput,
+    }).pipe(map((res) => res.data?.createEmployee));
+  }
+
+  deleteEmployee(id: string): Observable<any> {
+    return this.mutation<any>(DELETE_EMPLOYEE, {
+      id,
+    });
   }
 }

@@ -33,3 +33,23 @@ export const GET_EMPLOYEES = gql`
     }
   }
 `;
+
+export const DELETE_EMPLOYEE = gql`
+  mutation deleteEmployee($id: ID!) {
+    deleteEmployee(id: $id) {
+      id
+    }
+  }
+`;
+
+export const CREATE_EMPLOYEE = gql`
+  mutation createEmployee($EmployeeInput: EmployeeInput!) {
+    createEmployee(EmployeeInput: $EmployeeInput) {
+      first_name
+      last_name
+      email
+      gender
+      salary
+    }
+  }
+`;
