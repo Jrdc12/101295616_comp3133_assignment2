@@ -36,9 +36,7 @@ export const GET_EMPLOYEES = gql`
 
 export const DELETE_EMPLOYEE = gql`
   mutation deleteEmployee($id: ID!) {
-    deleteEmployee(id: $id) {
-      id
-    }
+    deleteEmployee(id: $id)
   }
 `;
 

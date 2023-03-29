@@ -43,6 +43,20 @@ export class EmployeeListComponent implements OnInit {
     this.showForm = !this.showForm;
   }
 
+  onDelete(id: string) {
+    this.graphqlService.deleteEmployee(id).subscribe(
+      ({ data }) => {
+        // Update the employees array to remove the deleted employee
+        this.employees = this.employees.filter(
+          (employee) => employee.id !== id
+        );
+      },
+      (error) => {
+        console.error(error);
+      }
+    );
+  }
+
   onSubmit() {
     const { firstName, lastName, email, gender, salary } = this.addForm.value;
     const employeeInput: EmployeeInput = {
