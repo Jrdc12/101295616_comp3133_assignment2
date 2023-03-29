@@ -7,6 +7,7 @@ import { CREATE_USER_MUTATION } from './graphql-queries';
 import { GET_EMPLOYEES } from './graphql-queries';
 import { CREATE_EMPLOYEE } from './graphql-queries';
 import { DELETE_EMPLOYEE } from './graphql-queries';
+import { EDIT_EMPLOYEE } from './graphql-queries';
 import { EmployeeInput } from '../interfaces/EmployeeInput';
 
 @Injectable({
@@ -70,5 +71,12 @@ export class GraphqlService {
     return this.mutation<any>(DELETE_EMPLOYEE, {
       id,
     });
+  }
+
+  editEmployee(id: string, employeeInput: EmployeeInput): Observable<any> {
+    return this.mutation<any>(EDIT_EMPLOYEE, {
+      id,
+      EmployeeInput: employeeInput,
+    }).pipe(map((res) => res.data?.editEmployee));
   }
 }

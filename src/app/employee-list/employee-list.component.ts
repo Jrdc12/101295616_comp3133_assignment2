@@ -57,6 +57,49 @@ export class EmployeeListComponent implements OnInit {
     );
   }
 
+  onEdit(employee: any) {
+    // Set the values of the form fields to the values of the employee being edited
+    this.addForm.setValue({
+      firstName: employee.first_name,
+      lastName: employee.last_name,
+      email: employee.email,
+      gender: employee.gender,
+      salary: employee.salary,
+    });
+
+    // Set the showForm flag to true to show the form
+    this.showForm = true;
+
+    // Update the submit function to call the editEmployee mutation instead
+    this.onSubmit = () => {
+      const { firstName, lastName, email, gender, salary } = this.addForm.value;
+      const employeeInput: EmployeeInput = {
+        first_name: firstName,
+        last_name: lastName,
+        email,
+        gender,
+        salary,
+      };
+      this.graphqlService.editEmployee(employee.id, employeeInput).subscribe(
+        ({ data }) => {
+          // Update the employees array with the updated employee
+          const index = this.employees.findIndex((e) => e.id === employee.id);
+          this.employees[index] = data.editEmployee;
+
+          // Hide the form and reset the form fields
+          this.showForm = false;
+          this.addForm.reset();
+          this.onSubmit = () => {
+            this.onSubmit();
+          };
+        },
+        (error) => {
+          console.error(error);
+        }
+      );
+    };
+  }
+
   onSubmit() {
     const { firstName, lastName, email, gender, salary } = this.addForm.value;
     const employeeInput: EmployeeInput = {

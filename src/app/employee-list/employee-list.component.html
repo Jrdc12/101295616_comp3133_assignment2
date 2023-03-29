@@ -57,7 +57,7 @@
       <td>{{ employee.gender }}</td>
       <td>{{ employee.salary }}</td>
       <td>
-        <button>Edit</button>
+        <button (click)="onEdit(employee)">Edit</button>
         <button (click)="onDelete(employee.id)">Delete</button>
       </td>
     </tr>

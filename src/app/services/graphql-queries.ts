@@ -51,3 +51,16 @@ export const CREATE_EMPLOYEE = gql`
     }
   }
 `;
+
+export const EDIT_EMPLOYEE = gql`
+  mutation editEmployee($id: ID!, $EmployeeInput: EmployeeInput!) {
+    editEmployee(id: $id, EmployeeInput: $EmployeeInput) {
+      id
+      first_name
+      last_name
+      email
+      gender
+      salary
+    }
+  }
+`;
