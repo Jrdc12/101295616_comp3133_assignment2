@@ -12,8 +12,11 @@ import { EmployeeInput } from '../interfaces/EmployeeInput';
 })
 export class EmployeeListComponent implements OnInit {
   employees: any[] = [];
-  showForm = false;
+  showAddForm = false;
+  showEditForm = false;
   addForm: FormGroup;
+  editForm: FormGroup;
+  selectedEmployee: any;
 
   constructor(
     private apollo: Apollo,
@@ -21,6 +24,14 @@ export class EmployeeListComponent implements OnInit {
     private graphqlService: GraphqlService
   ) {
     this.addForm = this.fb.group({
+      firstName: ['', Validators.required],
+      lastName: ['', Validators.required],
+      email: ['', [Validators.required, Validators.email]],
+      gender: ['', Validators.required],
+      salary: ['', Validators.required],
+    });
+
+    this.editForm = this.fb.group({
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
@@ -39,8 +50,12 @@ export class EmployeeListComponent implements OnInit {
       });
   }
 
-  toggleForm() {
-    this.showForm = !this.showForm;
+  toggleAddForm() {
+    this.showAddForm = !this.showAddForm;
+  }
+
+  toggleEditForm() {
+    this.showEditForm = !this.showEditForm;
   }
 
   onDelete(id: string) {
@@ -58,8 +73,9 @@ export class EmployeeListComponent implements OnInit {
   }
 
   onEdit(employee: any) {
-    // Set the values of the form fields to the values of the employee being edited
-    this.addForm.setValue({
+    // Set the selected employee and the values of the edit form fields
+    this.selectedEmployee = employee;
+    this.editForm.setValue({
       firstName: employee.first_name,
       lastName: employee.last_name,
       email: employee.email,
@@ -67,40 +83,11 @@ export class EmployeeListComponent implements OnInit {
       salary: employee.salary,
     });
 
-    // Set the showForm flag to true to show the form
-    this.showForm = true;
-
-    // Update the submit function to call the editEmployee mutation instead
-    this.onSubmit = () => {
-      const { firstName, lastName, email, gender, salary } = this.addForm.value;
-      const employeeInput: EmployeeInput = {
-        first_name: firstName,
-        last_name: lastName,
-        email,
-        gender,
-        salary,
-      };
-      this.graphqlService.editEmployee(employee.id, employeeInput).subscribe(
-        ({ data }) => {
-          // Update the employees array with the updated employee
-          const index = this.employees.findIndex((e) => e.id === employee.id);
-          this.employees[index] = data.editEmployee;
-
-          // Hide the form and reset the form fields
-          this.showForm = false;
-          this.addForm.reset();
-          this.onSubmit = () => {
-            this.onSubmit();
-          };
-        },
-        (error) => {
-          console.error(error);
-        }
-      );
-    };
+    // Show the edit form
+    this.toggleEditForm();
   }
 
-  onSubmit() {
+  onSubmitAddForm() {
     const { firstName, lastName, email, gender, salary } = this.addForm.value;
     const employeeInput: EmployeeInput = {
       first_name: firstName,
@@ -112,15 +99,44 @@ export class EmployeeListComponent implements OnInit {
     this.graphqlService.createEmployee(employeeInput).subscribe(
       ({ data }) => {
         // Update the employees array with the newly created employee
-        this.employees = [...this.employees, data.createEmployee];
+        this.employees.push(data.createEmployee);
 
         // Hide the form and reset the form fields
-        this.showForm = false;
+        this.toggleAddForm();
         this.addForm.reset();
       },
       (error) => {
         console.error(error);
       }
     );
+  }
+
+  onSubmitEditForm() {
+    const { firstName, lastName, email, gender, salary } = this.editForm.value;
+    const employeeInput: EmployeeInput = {
+      first_name: firstName,
+      last_name: lastName,
+      email,
+      gender,
+      salary,
+    };
+    this.graphqlService
+      .editEmployee(this.selectedEmployee.id, employeeInput)
+      .subscribe(
+        ({ data }) => {
+          // Update the employees array with the updated employee
+          const index = this.employees.findIndex(
+            (e) => e.id === this.selectedEmployee.id
+          );
+          this.employees[index] = data.editEmployee;
+
+          // Hide the form and reset the form fields
+          this.toggleEditForm();
+          this.editForm.reset();
+        },
+        (error) => {
+          console.error(error);
+        }
+      );
   }
 }
