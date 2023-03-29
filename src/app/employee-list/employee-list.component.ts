@@ -98,18 +98,28 @@ export class EmployeeListComponent implements OnInit {
     };
     this.graphqlService.createEmployee(employeeInput).subscribe(
       ({ data }) => {
-        // Update the employees array with the newly created employee
-        this.employees.push(data.createEmployee);
-
+        // Push the newly created employee to the employees array
+        const newEmployee = data.createEmployee;
+        this.employees = this.employees.concat(newEmployee);
+  
         // Hide the form and reset the form fields
         this.toggleAddForm();
         this.addForm.reset();
       },
       (error) => {
         console.error(error);
+      }, () => {
+        this.apollo
+          .watchQuery({
+            query: GET_EMPLOYEES,
+          })
+          .valueChanges.subscribe((result: any) => {
+            this.employees = result?.data?.getEmployees;
+          });
       }
     );
   }
+  
 
   onSubmitEditForm() {
     const { firstName, lastName, email, gender, salary } = this.editForm.value;
