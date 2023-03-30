@@ -9,6 +9,7 @@ import { CREATE_EMPLOYEE } from './graphql-queries';
 import { DELETE_EMPLOYEE } from './graphql-queries';
 import { EDIT_EMPLOYEE } from './graphql-queries';
 import { EmployeeInput } from '../interfaces/EmployeeInput';
+import { switchMap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
@@ -64,7 +65,18 @@ export class GraphqlService {
   createEmployee(employeeInput: EmployeeInput): Observable<any> {
     return this.mutation<any>(CREATE_EMPLOYEE, {
       EmployeeInput: employeeInput,
-    }).pipe(map((res) => res.data?.createEmployee));
+    }).pipe(
+      map((res) => res.data?.createEmployee),
+      // Add refetchQueries to automatically refetch the getEmployees query
+      switchMap(() => {
+        return this.apollo
+          .query<any>({
+            query: GET_EMPLOYEES,
+            fetchPolicy: 'network-only',
+          })
+          .pipe(map((res) => res.data?.getEmployees));
+      })
+    );
   }
 
   deleteEmployee(id: string): Observable<any> {

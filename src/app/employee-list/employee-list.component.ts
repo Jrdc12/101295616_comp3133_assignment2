@@ -101,14 +101,15 @@ export class EmployeeListComponent implements OnInit {
         // Push the newly created employee to the employees array
         const newEmployee = data.createEmployee;
         this.employees = this.employees.concat(newEmployee);
-  
+
         // Hide the form and reset the form fields
         this.toggleAddForm();
         this.addForm.reset();
       },
       (error) => {
         console.error(error);
-      }, () => {
+      },
+      () => {
         this.apollo
           .watchQuery({
             query: GET_EMPLOYEES,
@@ -119,7 +120,6 @@ export class EmployeeListComponent implements OnInit {
       }
     );
   }
-  
 
   onSubmitEditForm() {
     const { firstName, lastName, email, gender, salary } = this.editForm.value;
