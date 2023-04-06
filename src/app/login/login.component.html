@@ -14,7 +14,13 @@
     />
   </div>
   <button type="submit" class="form-button">Login</button>
-  <div *ngIf="errorMessage" class="form-error">{{ errorMessage }}</div>
+  <div *ngIf="errorMessage" class="error-modal">
+    <div class="error-modal-content">
+      <span class="error-modal-close" (click)="closeErrorModal()">&times;</span>
+      <p>{{ errorMessage }}</p>
+    </div>
+  </div>
+
   <div class="form-link">
     <span style="color: black">Don't have an account? </span
     ><a routerLink="/signup" style="color: #2196f3">Sign up here</a>.

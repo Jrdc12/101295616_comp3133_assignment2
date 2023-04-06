@@ -10,7 +10,7 @@ import { GraphqlService } from '../services/graphql.service';
 })
 export class LoginComponent implements OnInit {
   loginForm: FormGroup;
-  errorMessage = 'INVALID';
+  errorMessage = '';
 
   constructor(
     private fb: FormBuilder,
@@ -21,9 +21,6 @@ export class LoginComponent implements OnInit {
       email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required],
     });
-
-    // Reset error message
-    this.errorMessage = '';
   }
 
   ngOnInit(): void {}
@@ -49,5 +46,9 @@ export class LoginComponent implements OnInit {
     } else {
       console.log('Form is invalid');
     }
+  }
+
+  closeErrorModal(): void {
+    this.errorMessage = '';
   }
 }
